@@ -1,0 +1,337 @@
+<html lang="en" ng-app="App">
+
+<head>
+
+	<style>
+
+		body {
+
+
+
+		}
+
+
+
+		h1 {
+
+			padding-left: 2vw;
+
+		}
+
+
+
+		.md-button {
+
+			min-width: 5vw !important;
+
+		}
+
+
+
+		#nav {
+
+			max-width: 250px;
+
+			width: 250px;
+
+			background-color: #5555BB;
+
+			color: white;
+
+		}
+
+
+
+		#nav-item {
+
+			height: 8vh;
+
+			text-align: left;
+
+		}
+
+
+
+		#content {
+
+			flex: 3;
+
+			flex-grow: 3;
+
+		}
+
+
+
+		#header {
+
+			background-color: #171711;
+
+			color: white;
+
+		}
+
+
+
+		#tbody {
+
+			-webkit-flex-grow: 1;
+
+			flex-grow: 1;
+
+
+
+			min-height: 0px;
+
+		}
+
+		#tbody>div {
+
+			max-height:100%;
+
+			overflow-y: auto;
+
+		}
+
+
+
+		.th, .td {
+
+			display: -webkit-flex;
+
+			display: flex;
+
+
+
+			-webkt-justify-content: start;
+
+			justify-content: start;
+
+			-webkt-align-items: center;
+
+			align-items: center;
+
+
+
+			padding-left: 2vw;
+
+			height: 6vh;
+
+		}
+
+
+
+		.th {
+
+			font-weight: strong;
+
+		}
+
+
+
+		#logo {
+
+			overflow: hidden;
+
+
+
+			margin: 25px;
+
+
+
+			border-radius: 25%;
+
+		}
+
+
+
+	</style>
+
+
+
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+
+
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+
+
+
+	<script>
+
+		Array.prototype.random = function() {
+
+			return this[Math.round(Math.random()*(this.length-1))];
+
+		}
+
+
+
+		var app = angular.module('App', ['ngMaterial', 'ngAnimate']);
+
+
+
+		app.controller('AppCtrl', ['$scope', 
+
+			function($scope){
+
+				$scope.navs = {
+
+					Providers:[],
+
+					Services:[],
+
+					Users:[],
+
+					Reports:[]
+
+				};
+
+
+
+				$scope.keys = ['Name', 'Address', 'Phone'];
+
+				$scope.curdat = [];
+
+				$scope.current = '';
+
+
+
+				function rand(int) {
+
+					return Math.round(Math.random()*int);
+
+				}
+
+
+
+				$scope.setCurrent = function(curr) {
+
+					$scope.current = curr;
+
+					$scope.curdat = $scope.navs[curr];
+
+
+
+					//Because not real data:
+
+					var names = ['Cat','Dog','Michigan','Ice cream','Artic Cat', 'Apples and Oranges', 'Atlantic Airlines', 'African Safari', 'Florida Wildabeast'];
+
+					var streets = ['Michigan HW', 'Swift Lane', 'Tricity Blvd.', 'Adams Ave.', 'Biplane Way', 'River Run Drive'];
+
+					var cities = ['Liberty', 'Ogden', 'Layton', 'Logan', 'Pleasant View', 'Salt Lake', 'Pheonix', 'Riverdale', 'Harrisville', 'Huntsville', 'Eden', 'Morgan'];
+
+					var states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
+
+					for (var i = 0; i < rand(65)+10; i++)
+
+						$scope.curdat.push({
+
+							Name: names.random(),
+
+							Address: [rand(899)*10+1000, streets.random() + ', ', cities.random(), states.random(), rand(79999)+20000].join(' '),
+
+							Phone: '(' + (rand(899) + 100) + ') ' + (rand(899) + 100) + ' - ' + (rand(8999) + 1000)
+
+						});
+
+				}
+
+
+
+				$scope.setCurrent('Providers');
+
+
+
+				for (key in $scope.navs) {
+
+					$scope.navs[key]
+
+				}
+
+			}
+
+		]);
+
+	</script>
+
+
+
+</head>
+
+<body ng-controller="AppCtrl" layout="row" layout-align="stretch start">
+
+	<div id="nav" layout="column" layout-align="stretch start">
+
+		<div id="logo">
+
+			<img src="logo.png" width="100%">
+
+		</div>
+
+		<md-button id="nav-item" ng-repeat="(name, val) in navs" ng-click="setCurrent(name)">{{name}}</md-button>
+
+	</div>
+
+	<div id="content" style="height: 100%" layout="column">
+
+		<div layout="row" layout-align="start center">
+
+			<h1>{{current}}</h1>
+
+			<md-button class="md-raised" style="height: 5vh; font-weight: bold">Add</md-button>
+
+		</div>
+
+		<div id="header" layout="row">
+
+			<div class="th" ng-repeat="(i, key) in keys" flex="30">
+
+				{{key}}:
+
+			</div>
+
+			<div class="th" flex="10">
+
+				Actions:
+
+			</div>
+
+		</div>
+
+		<div id="tbody" layout="column">
+
+			<div>
+
+				<div class="tr" ng-repeat="obj in curdat" layout="row">
+
+					<div ng-repeat="key in keys" class="td" flex="30">
+
+						{{obj[key]}}
+
+					</div>
+
+					<div class="td" flex="10" style="padding: 0px;">
+
+						<md-button class="md-raised" style="height: 5vh; font-weight: bold">Edit</md-button>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<html lang="en" ng-app="App">
+<head>
+	<style>
+		body {
+			overflow: hidden;
+		}
+		#cont, #form {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+
+			-webkit-display: flex;
+			display: flex;
+			
+			-webkit-flex-direction: column;
+			flex-direction: column;
+			
+			-webkit-align-items: center;
+			align-items: center;
+
+			-webkit-justify-content: center;
+			justify-content: center;
+		}
+
+		#swipe-parent {
+			position: relative;
+		}
+
+		#swipe-img {
+			position: absolute;
+			left: 0;
+			right: auto;
+
+			-webkit-animation: swipe 2.5s ease-in-out;
+			animation: swipe 2.5s ease-in-out;
+
+			-webkit-animation-iteration-count: infinite;
+			animation-iteration-count: infinite;
+
+			width: 25%;
+		}
+
+		@keyframes swipe{
+			0% {
+				opacity: 0;
+				left: 0;
+			}
+			15% {
+				opacity: 1;
+				left: 0;
+			}
+			60% {
+				opacity: 1;
+				left: 75%;
+			}
+			75% {
+				opacity: 0;
+				left: 75%;
+			}
+			100% {
+				opacity: 0;
+				left: 75%;	
+			}
+		}
+
+		body>div {
+			-webkit-transition:all ease-in-out .25s;
+			-moz-transition:all ease-in-out .25s;
+			-o-transition:all ease-in-out .25s;
+			transition:all ease-in-out .25s;
+		}
+
+		body>div.ng-hide-add.ng-hide-add-active {
+			transform: translate(0, -100%);
+		}
+
+		body>div.ng-hide-remove {
+			transform: translate(0, 100%);	
+		}
+
+		body>div.ng-hide-add,
+		body>div.ng-hide-remove.ng-hide-remove-active {
+			transform: translate(0, 0%);
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+
+	<script>
+		var app = angular.module('App', ['ngMaterial', 'ngAnimate']);
+
+		app.controller('AppCtrl', ['$scope', 
+			function($scope){
+				$scope.State = {
+					START:0,
+					CLICKED:1,
+					VERIFIED:2,
+				};
+
+				$scope.state = 0;
+
+				var timeout = -1;
+
+				$scope.setClicked = function(){
+					$scope.state = $scope.State.CLICKED;
+					setTimeout(moveOn, 2000);
+				}
+				$scope.setVerified = function() {
+					if (timeout !== -1)
+						clearTimeout(timeout);
+					moveOn(false);
+				}
+				function moveOn(apply) {
+					$scope.state = $scope.State.VERIFIED;
+					if (apply !== false)
+						$scope.$apply();
+				}
+			}
+		]);
+	</script>
+
+</head>
+<body ng-controller="AppCtrl">
+	<div id="cont" ng-show="state === State.START" ng-click="setClicked()">
+		<h1>Welcome</h1>
+		<h2>Please swipe the membership card</h2>
+		<div id="swipe-parent" style="width: 66%; max-width: 700px;">
+			<img id="swipe-img" src="http://s17.postimg.org/jcys5erkr/card_hand2.png"/>
+		</div>
+	</div>
+	<div id="cont" ng-show="state === State.CLICKED" ng-click="setVerified()">
+		<h1>Success!</h1>
+		<h2>The user's membership is valid.</h2>
+
+	</div>
+	<div id="form" ng-show="state === State.VERIFIED">
+		<div>
+			<h1>Please Verify the Following:</h1>
+			<md-content layout-padding>
+				<form name="userForm">
+					<div layout layout-align="end center" layout-wrap>
+						<md-input-container flex="50">
+							<label>Date:</label>
+							<input />
+						</md-input-container>
+						<md-input-container flex="50">
+							<label>Service Code:</label>
+							<input />
+						</md-input-container>
+						<md-button class="md-raised md-primary">Save</md-button>
+					<div>
+				</form>
+			</md-content>
+		</div>
+	</div>
+</body>
+</html>
