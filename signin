@@ -1,0 +1,81 @@
+<html lang="en" ng-app="App">
+<head>
+	<title>Admin Sign In</title>
+	<style>
+		body {
+			overflow: hidden;
+		}
+		#logo {
+			position: fixed;
+			top: 0;
+			left: 1vw;
+			width: 10vw;
+
+			/* For new logo only */
+			margin-top: 15px;
+		}
+		#form {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			left: 0;
+
+			-webkit-display: flex;
+			display: flex;
+
+			-webkit-flex-direction: column;
+			flex-direction: column;
+
+			-webkit-align-items: center;
+			align-items: center;
+
+			-webkit-justify-content: center;
+			justify-content: center;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-animate.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-aria.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
+
+	<script>
+		var app = angular.module('App', ['ngMaterial']);
+		app.controller('AppCtrl', ['$scope',
+			function($scope){
+
+			}
+		]);
+	</script>
+
+</head>
+<body ng-controller="AppCtrl">
+	<div id="logo">
+		<img src="logo.gif " width="100%"/>
+	</div>
+	<div id="form" ng-show="state === State.VERIFIED">
+		<div style="max-width: 35%">
+			<h1>Please Enter information:</h1>
+			<md-content layout-padding>
+				<form name="userForm">
+					<div layout layout-align="end center" layout-wrap>
+						<md-input-container flex="50">
+							<label>Username:</label>
+							<input ng-model="verify.name" />
+						</md-input-container>
+						<md-input-container flex="50">
+							<label>Password:</label>
+							<input ng-model="verify.mem_number" />
+						</md-input-container>
+						<md-button class="md-raised md-primary" ng-click="finish()">Login</md-button>
+					</div>
+				</form>
+			</md-content>
+		</div>
+	</div>
+</body>
+</html>
