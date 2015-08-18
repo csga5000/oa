@@ -105,6 +105,11 @@
 					VERIFIED:2,
 				};
 
+				$scope.verify = {
+					name: 'Example User',
+					mem_number: '123456789'
+				}
+
 				$scope.state = 0;
 
 				var timeout = -1;
@@ -142,11 +147,19 @@
 
 	</div>
 	<div id="form" ng-show="state === State.VERIFIED">
-		<div>
+		<div style="max-width: 35%">
 			<h1>Please Verify the Following:</h1>
 			<md-content layout-padding>
 				<form name="userForm">
 					<div layout layout-align="end center" layout-wrap>
+						<md-input-container flex="50">
+							<label>Member Name:</label>
+							<input ng-model="verify.name" />
+						</md-input-container>
+						<md-input-container flex="50">
+							<label>Member Number:</label>
+							<input ng-model="verify.mem_number" />
+						</md-input-container>
 						<md-input-container flex="50">
 							<label>Date:</label>
 							<input />
@@ -155,11 +168,15 @@
 							<label>Service Code:</label>
 							<input />
 						</md-input-container>
-						<md-button class="md-raised md-primary">Save</md-button>
+						<md-button class="md-raised md-primary" ng-click="finish()">Save</md-button>
 					<div>
 				</form>
 			</md-content>
 		</div>
+	</div>
+	<div id="cont" ng-show="state === State.CLICKED" ng-click="reset()">
+		<h1>Success!</h1>
+		<h2>Member service use has been recorded!</h2>
 	</div>
 </body>
 </html>
