@@ -8,6 +8,8 @@
 		}
 		.md-button {
 			min-width: 5vw !important;
+			padding-left: 1.5vw !important;
+			padding-right: 1.5vw !important;
 		}
 		#nav {
 			max-width: 250px;
@@ -84,6 +86,19 @@
 		}
 		*:focus {
 			outline: none;
+		}
+		#reports {
+			max-width: 1028px;
+		}
+		#reports .md-button {
+			box-sizing: border-box !important;
+			width: 100%;
+			margin-left: 0px !important;
+			margin-right: 0px !important;
+		}
+		#reports .button-parent {
+			padding-left: 8px;
+			padding-right: 8px;
 		}
 	</style>
 
@@ -288,6 +303,20 @@
 					$scope.curdat.splice($scope.curdat.indexOf(obj) ,1);
 				}
 
+				$scope.sendReport = function(ev) {
+					$mdDialog.show(
+						$mdDialog.confirm()
+							.parent(angular.element(document.body))
+							.clickOutsideToClose(true)
+							.title('Confirmation')
+							.content('Are you sure you want to sent reports now?')
+							.ariaLabel('Confirmation of send')
+							.ok('Send')
+							.cancel('Cancel')
+							.targetEvent(ev)
+					);
+				}
+
 				$scope.setCurrent('Providers');
 			}
 		]);
@@ -366,6 +395,31 @@
 							<img class="action-icon" src="edit.png" ng-click="edit(obj, $event)"/>
 							<img class="action-icon" src="remove.png" ng-click="remove(obj, $event)"/>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div ng-if="current === 'Reports'">
+			<div id="title" layout="row" layout-align="start center">
+				<h1>{{current}}</h1>
+			</div>
+			<hr>
+			<div layout="row" layout-align="center start">
+				<div id="reports" layout="row" layout-align="center start" layout-wrap>
+					<div class="button-parent" flex-gt-md="33" flex-gt-sm="50" flex-sm="100">
+						<md-button ng-click="sendReport($event)" class="md-raised">Send Report to Member</md-button>
+					</div>
+					<div class="button-parent" flex-gt-md="33" flex-gt-sm="50" flex-sm="100">
+						<md-button ng-click="sendReport($event)" class="md-raised">Send Report to Provider</md-button>
+					</div>
+					<div class="button-parent" flex-gt-md="33" flex-gt-sm="50" flex-sm="100">
+						<md-button ng-click="sendReport($event)" class="md-raised">Send Summary Report</md-button>
+					</div>
+					<div class="button-parent" flex-gt-md="33" flex-gt-sm="50" flex-sm="100">
+						<md-button ng-click="sendReport($event)" class="md-raised">Write EFT</md-button>
+					</div>
+					<div class="button-parent" flex-gt-md="33" flex-gt-sm="50" flex-sm="100">
+						<md-button ng-click="sendReport($event)" class="md-raised md-primary">Send all weekly reports!</md-button>
 					</div>
 				</div>
 			</div>
