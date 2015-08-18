@@ -19,11 +19,19 @@
 			height: 8vh;
 			text-align: left;
 		}
+		#title {
+			height: 90px;
+		}
 		#content {
 			flex: 3;
 			flex-grow: 3;
+			height: 100vh;
+		}
+		#content > div {
+			height: 100%;
 		}
 		#header {
+			height: 60px;
 			background-color: #171711;
 			color: white;
 		}
@@ -31,6 +39,8 @@
 			-webkit-flex-grow: 1;
 			flex-grow: 1;
 			min-height: 0px;
+
+			max-height: calc(100% - 90px - 60px);
 		}
 		#tbody>div {
 			max-height:100%;
@@ -45,6 +55,7 @@
 			align-items: center;
 			padding-left: 2vw;
 			height: 6vh;
+			box-sizing: border-box;
 		}
 		.th {
 			font-weight: strong;
@@ -57,7 +68,22 @@
 			background-color: rgba(255,255,255,.75);
 		}
 		.action-icon {
-
+			padding: 5px;
+			margin-right: 10px;
+			opacity: .5;
+			transition: .33s all;
+			border: 2px solid #cccccc;
+			border-radius: 20%;
+		}
+		.action-icon:hover {
+			opacity: 1;
+			border-color: #444444;
+		}
+		.action-icon:last-child {
+			margin-right: 0px;
+		}
+		*:focus {
+			outline: none;
 		}
 	</style>
 
@@ -70,11 +96,43 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.9.4/angular-material.min.js"></script>
 
 	<script>
-		var names = ['Cat','Dog','Michigan','Ice cream','Artic Cat', 'Apples and Oranges', 'Atlantic Airlines', 'African Safari', 'Florida Wildabeast'];
+	//http://stackoverflow.com/questions/986937/how-can-i-get-the-browsers-scrollbar-sizes
+		function getScrollBarWidth () {
+			var inner = document.createElement('p');
+			inner.style.width = "100%";
+			inner.style.height = "200px";
+
+			var outer = document.createElement('div');
+			outer.style.position = "absolute";
+			outer.style.top = "0px";
+			outer.style.left = "0px";
+			outer.style.visibility = "hidden";
+			outer.style.width = "200px";
+			outer.style.height = "150px";
+			outer.style.overflow = "hidden";
+			outer.appendChild (inner);
+
+			document.body.appendChild (outer);
+			var w1 = inner.offsetWidth;
+			outer.style.overflow = 'scroll';
+			var w2 = inner.offsetWidth;
+			if (w1 == w2) w2 = outer.clientWidth;
+
+			document.body.removeChild (outer);
+
+			return (w1 - w2);
+		};
+
+		var names = ['Quotetone', 'Bigtechno', 'Dentoquote', 'Tonlab', 'Ronlamhigh', 'Siltrax', 'Zonphase', 'Medtexon', 'Unizap', 'Mediazap', 'Ranreddax', 'Techizim', 'Howanjob', 'Transway', 'Stanla', 'Trantone', 'xxx--corporation', 'Carenix', 'Tonhouse'];
 		var streets = ['Michigan HW', 'Swift Lane', 'Tricity Blvd.', 'Adams Ave.', 'Biplane Way', 'River Run Drive'];
 		var cities = ['Liberty', 'Ogden', 'Layton', 'Logan', 'Pleasant View', 'Salt Lake', 'Pheonix', 'Riverdale', 'Harrisville', 'Huntsville', 'Eden', 'Morgan'];
 		var states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
 		var types = ['internist', 'dietitian', 'fitness trainer', 'aerobics', 'gym'];
+		//Got those from common names here: http://www.lifesmith.com/comnames.html
+		var unames = ['Smith', 'Anderson', 'Clark', 'Wright', 'Mitchell', 'Johnson', 'Thomas', 'Rodriguez', 'Lopez', 'Perez', 'Williams', 'Jackson', 'Lewis', 'Hill', 'Roberts', 'Jones', 'White', 'Lee', 'Scott', 'Turner', 'Brown', 'Harris', 'Walker', 'Green', 'Phillips', 'Davis', 'Martin', 'Hall', 'Adams', 'Campbell', 'Miller', 'Thompson', 'Allen', 'Baker', 'Parker', 'Wilson', 'Garcia', 'Young', 'Gonzalez', 'Evans', 'Moore', 'Martinez', 'Hernandez', 'Nelson', 'Edwards', 'Taylor', 'Robinson', 'King', 'Carter', 'Collins'];
+		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		var services = ['Checkup', 'Workout', 'Meal', 'Excercise', 'Evaluation', 'Test'];
+		var service_prefixes = ['Health', 'Weight', 'Weightloss', 'Digestion', 'Critical', 'Intense'];
 
 		function rand(int) {
 			return Math.round(Math.random()*int);
@@ -88,30 +146,52 @@
 			return '(' + (rand(899) + 100) + ') ' + (rand(899) + 100) + ' - ' + (rand(8999) + 1000);
 		}
 
+		function getDollars() {
+			return '$' + rand(999) + '.' + ['00', '99', '50', '25', '75', '49'].random();
+		}
+
+		function objKeys(obj) {
+			var tkeys = Object.keys(obj);
+
+			//Filter out angular vars
+			var keys = [];
+			tkeys.forEach(function(key){
+				if (key.charAt(0) !== '$')
+					keys.push(key);
+			});
+
+			return keys;
+		}
+
 		Array.prototype.random = function() {
 			return this[rand(this.length-1)];
 		}
 		var app = angular.module('App', ['ngMaterial', 'ngAnimate']);
-		app.controller('AppCtrl', ['$scope', 
-			function($scope){
+		app.controller('AppCtrl', ['$scope', '$mdDialog',
+			function($scope, $mdDialog){
 				$scope.navs = {
 					Providers:[],
 					Services:[],
 					Users:[],
 					Reports:[]
 				};
-				$scope.keys = ['Phone', 'Type', 'Name', 'Address', 'Phone'];
 				$scope.curdat = [];
 				$scope.current = '';
 				$scope.cols = {};
+				$scope.scroll_size = getScrollBarWidth();
 
 				$scope.setCurrent = function(curr) {
 					$scope.current = curr;
 					$scope.curdat = $scope.navs[curr];
+					$scope.curdat = [];
+					$scope.cols = {};
+
+					var widths;
+
 					//Because not real data:
 
 					if (curr === 'Providers') {
-						for (var i = 0; i < rand(65)+10; i++) {
+						for (var i = 0; i < rand(65)+25; i++) {
 							$scope.curdat.push({
 								'#': rand(899999999) + 100000000,
 								type: types.random(),
@@ -120,17 +200,137 @@
 								Phone: getPhone()
 							});
 						}
+						$scope.cols = {
+							'#': 10,
+							type: 15,
+							Name: 15,
+							Address: 35,
+							Phone: 15,
+						};
 					}
-
-					var widths = [10, 15, 15, 35, 15, 10];
-					var i = 0;
-					for (key in $scope.curdat[0]) {
-						$scope.cols[key] = widths[i];
-						i++;
+					else if (curr === 'Services') {
+						for (var i = 0; i < rand(65)+25; i++) {
+							$scope.curdat.push({
+								'#': rand(899999999) + 100000000,
+								Provider: names.random(),
+								Name: service_prefixes.random() + ' ' + services.random(),
+								Address: getAddress(),
+								Cost: getDollars()
+							});
+						}
+						$scope.cols = {
+							'#': 10,
+							Provider: 15,
+							Name: 15,
+							Address: 35,
+							Cost: 15,
+						};
+					}
+					else if (curr === 'Users') {
+						for (var i = 0; i < rand(65)+25; i++) {
+							$scope.curdat.push({
+								'#': rand(899999999) + 100000000,
+								Name: names.random(),
+								Address: getAddress(),
+								Phone: getPhone(),
+								PaidUntil: months.random()
+							});
+						}
+						$scope.cols = {
+							'#': 10,
+							Name: 20,
+							Address: 35,
+							Phone: 15,
+							PaidUntil: 10,
+						};
 					}
 				}
+
+				$scope.objKeys = objKeys;
+
+				$scope.edit = function(obj, event) {
+					var edit = {
+						controller: EditController,
+						templateUrl: 'dialogs/edit.html',
+						parent: angular.element(document.body),
+						targetEvent: event,
+						locals: {obj: obj}
+					};
+
+					$mdDialog.show(edit)
+					//User Confirmed
+					.then(function(obj) {
+						obj = obj;
+					},
+					//User Canceled
+					function(){
+					});
+				}
+				$scope.add = function(event) {
+					var edit = {
+						templateUrl: 'dialogs/add.html',
+						controller: AddController,
+						parent: angular.element(document.body),
+						targetEvent: event,
+						locals: {obj: $scope.curdat[0]}
+					};
+
+					$mdDialog.show(edit)
+					//User Confirmed
+					.then(function(obj) {
+						$scope.curdat.push(obj);
+					},
+					//User Canceled
+					function(){
+					});
+				}
+				$scope.remove = function(obj) {
+					$scope.curdat.splice($scope.curdat.indexOf(obj) ,1);
+				}
+
+				$scope.setCurrent('Providers');
 			}
 		]);
+
+		function EditController($scope, $mdDialog, obj) {
+			$scope.obj = obj;
+
+			var original = {};
+			for (var key in obj)
+				original[key] = obj[key];
+
+			$scope.objKeys = objKeys;
+
+			$scope.hide = function() {
+				$mdDialog.hide();
+			};
+			$scope.cancel = function() {
+				$mdDialog.cancel();
+				for (var key in obj)
+					obj[key] = original[key];
+			};
+			$scope.answer = function() {
+				$mdDialog.hide($scope.obj);
+			};
+		}
+		function AddController($scope, $mdDialog, obj) {
+			$scope.obj = {};
+
+			for (var key in obj)
+				$scope.obj[key] = '';
+
+			$scope.objKeys = objKeys;
+
+			$scope.hide = function() {
+				$mdDialog.hide();
+			};
+			$scope.cancel = function() {
+				$mdDialog.cancel();
+			};
+			$scope.answer = function() {
+				$mdDialog.hide($scope.obj);
+			};
+		}
 	</script>
 </head>
 <body ng-controller="AppCtrl" layout="row" layout-align="stretch start">
@@ -141,30 +341,30 @@
 		<md-button id="nav-item" ng-repeat="(name, val) in navs" ng-click="setCurrent(name)">{{name}}</md-button>
 	</div>
 	<!-- I realize I could use ng-view, but I was lazy, and this loads it all without making extra requests, too, I'm reusing it to load any object -->
-	<div id="content" style="height: 100%" layout="column">
+	<div id="content" layout="column">
 		<div ng-if="current !== 'Reports'">
-			<div layout="row" layout-align="start center">
+			<div id="title" layout="row" layout-align="start center">
 				<h1>{{current}}</h1>
-				<md-button class="md-raised" style="height: 5vh; font-weight: bold">Add</md-button>
+				<md-button class="md-raised" style="height: 5vh; font-weight: bold" ng-click="add($event)">Add</md-button>
 			</div>
-			<div id="header" layout="row">
+			<div id="header" layout="row" ng-attr-style="padding-right: {{::scroll_size}}px;">
 				<!-- Assume objects are uniform, and get keys from first object -->
-				<div class="th" ng-repeat="(key, val) in cols" ng-flex="{{val}}">
-					{{key}}:
+				<div class="th" ng-repeat="key in objKeys(cols)" ng-attr-flex="{{cols[key]}}">
+					{{::key}}:
 				</div>
-				<div class="th">
+				<div class="th" flex="10" style="padding-left: 0px;">
 					Actions:
 				</div>
 			</div>
 			<div id="tbody" layout="column">
 				<div>
 					<div class="tr" ng-repeat="obj in curdat" layout="row">
-						<div ng-repeat="(key, value) in obj" class="td" ng-flex="{{cols[key]}}">
-							{{value}}
+						<div ng-repeat="key in objKeys(obj)" class="td" ng-attr-flex="{{cols[key]}}">
+							{{obj[key]}}
 						</div>
 						<div class="td" flex="10" style="padding: 0px;">
-							<img class="action-icon" src="edit.png"/>
-							<img class="action-icon" src="remove.png"/>
+							<img class="action-icon" src="edit.png" ng-click="edit(obj, $event)"/>
+							<img class="action-icon" src="remove.png" ng-click="remove(obj, $event)"/>
 						</div>
 					</div>
 				</div>

@@ -1,0 +1,23 @@
+<md-dialog aria-label="Edit Item" style="min-width: 512px">
+	<form>
+		<md-dialog-content>
+			<h2>Edit Item</h2>
+			<div>
+				<md-input-container ng-repeat="key in objKeys(obj)">
+					<label>{{key}}:</label>
+					<input ng-model="obj[key]">
+				</md-input-container>
+			</div>
+			<p>{{error}}</p>
+		</md-dialog-content>
+		<div class="md-actions" layout="row">
+			<span flex></span>
+			<md-button class="md-raised" target="_blank" ng-click="cancel()">
+				Cancel
+			</md-button>
+			<md-button class="md-raised md-primary" target="_blank" ng-click="answer()">
+				Save
+			</md-button>
+		</div>
+	</form>
+</md-dialog>
