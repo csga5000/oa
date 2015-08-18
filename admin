@@ -1,5 +1,6 @@
 <html lang="en" ng-app="App">
 <head>
+	<title>Admin Interface</title>
 	<style>
 		body {
 		}

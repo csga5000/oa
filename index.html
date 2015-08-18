@@ -1,10 +1,20 @@
 <html lang="en" ng-app="App">
 <head>
+	<title>Terminal</title>
 	<style>
 		body {
 			overflow: hidden;
 		}
-		#cont, #form {
+		#logo {
+			position: fixed;
+			top: 0;
+			left: 1vw;
+			width: 10vw;
+
+			/* For new logo only */
+			margin-top: 15px;
+		}
+		.cont, #form {
 			position: absolute;
 			top: 0;
 			bottom: 0;
@@ -13,10 +23,10 @@
 
 			-webkit-display: flex;
 			display: flex;
-			
+
 			-webkit-flex-direction: column;
 			flex-direction: column;
-			
+
 			-webkit-align-items: center;
 			align-items: center;
 
@@ -99,11 +109,14 @@
 
 		app.controller('AppCtrl', ['$scope', 
 			function($scope){
-				$scope.State = {
+				State = {
 					START:0,
 					CLICKED:1,
 					VERIFIED:2,
+					COMPLETED:3,
 				};
+
+				$scope.State = State;
 
 				$scope.verify = {
 					name: 'Example User',
@@ -112,21 +125,25 @@
 
 				$scope.state = 0;
 
-				var timeout = -1;
+				var ti = -1;
 
-				$scope.setClicked = function(){
-					$scope.state = $scope.State.CLICKED;
-					setTimeout(moveOn, 2000);
+				$scope.moveOn = function() {
+					$scope.state = ($scope.state+1) % (State.COMPLETED+1);
+
+					if (ti !== -1) {
+						clearTimeout(ti);
+						ti = -1;
+					}
 				}
-				$scope.setVerified = function() {
-					if (timeout !== -1)
-						clearTimeout(timeout);
-					moveOn(false);
-				}
-				function moveOn(apply) {
-					$scope.state = $scope.State.VERIFIED;
-					if (apply !== false)
+
+				$scope.finish = function() {
+					$scope.moveOn();
+
+					function tmp() {
+						$scope.moveOn();
 						$scope.$apply();
+					}
+					ti = setTimeout(tmp, 3000);
 				}
 			}
 		]);
@@ -134,17 +151,19 @@
 
 </head>
 <body ng-controller="AppCtrl">
-	<div id="cont" ng-show="state === State.START" ng-click="setClicked()">
+	<div id="logo">
+		<img src="logo.gif " width="100%"/>
+	</div>
+	<div class="cont" ng-show="state === State.START" ng-click="moveOn()">
 		<h1>Welcome</h1>
 		<h2>Please swipe the membership card</h2>
 		<div id="swipe-parent" style="width: 66%; max-width: 700px;">
 			<img id="swipe-img" src="http://s17.postimg.org/jcys5erkr/card_hand2.png"/>
 		</div>
 	</div>
-	<div id="cont" ng-show="state === State.CLICKED" ng-click="setVerified()">
+	<div class="cont" ng-show="state === State.CLICKED" ng-click="moveOn()">
 		<h1>Success!</h1>
 		<h2>The user's membership is valid.</h2>
-
 	</div>
 	<div id="form" ng-show="state === State.VERIFIED">
 		<div style="max-width: 35%">
@@ -169,12 +188,12 @@
 							<input />
 						</md-input-container>
 						<md-button class="md-raised md-primary" ng-click="finish()">Save</md-button>
-					<div>
+					</div>
 				</form>
 			</md-content>
 		</div>
 	</div>
-	<div id="cont" ng-show="state === State.CLICKED" ng-click="reset()">
+	<div class="cont" ng-show="state === State.COMPLETED" ng-click="moveOn()">
 		<h1>Success!</h1>
 		<h2>Member service use has been recorded!</h2>
 	</div>
